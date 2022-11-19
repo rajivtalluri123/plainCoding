@@ -32,7 +32,8 @@ public class SlidingWindowLeet {
     }
 
     //239. Sliding Window Maximum
-    //You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+    //You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right.
+    // You can only see the k numbers in the window. Each time the sliding window moves right by one position.
     //
     //Return the max sliding window.
     //Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
@@ -74,7 +75,8 @@ public class SlidingWindowLeet {
     //Input: s = "ADOBECODEBANC", t = "ABC"
     //o/p : BANC
 
-    //alg-- use sliding window technique using left and right pointer-- inc right pointer till u got desired window and then dec left untill wundow is desired
+    //alg-- use sliding window technique using left and right pointer-- inc right pointer till u got desired window
+    // and then dec left untill wundow is desired
     //repeat the process and upate the min res string in the process
     public String minWindow(String S, String T) {
         if(S==null||S.isEmpty()||T==null||T.isEmpty()) return "";
@@ -95,12 +97,12 @@ public class SlidingWindowLeet {
         for(int right =0; right < S.length(); right++) {
 
             mapS.put(S.charAt(right), mapS.getOrDefault(S.charAt(right), 0) +1);
-            if(mapT.containsKey(S.charAt(right)) && mapT.get(S.charAt(right)) == mapS.get(S.charAt(right))) {
-                formed++;
+            if(mapT.containsKey(S.charAt(right)) && mapT.get(S.charAt(right)) >= mapS.get(S.charAt(right))) {
+                formed++;  // use all teh chars in T including dups
             }
 
             //slide left till window is not desired
-            while(formed == mapT.size()) {
+            while(formed == T.length()) {
                 //update latest min
                 if(right-left +1 < min) {
                     res= S.substring(left, right+1);
