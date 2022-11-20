@@ -1,9 +1,7 @@
 package tree;
 
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class TreeLeet {
 
@@ -56,5 +54,35 @@ public class TreeLeet {
 
     }
 
-
+    //1469. Find All The Lonely Nodes
+    // In a binary tree, a lonely node is a node that is the only child of its parent node. The root of the tree is not lonely because it does not have a parent node.
+    //
+    //Given the root of a binary tree, return an array containing the values of all lonely nodes in the tree. Return the list in any order.
+    // Input: root = [1,2,3,null,4]
+    // o/p -- [4]
+    // alg -- start the bfs process from the root and track all the single child nodes
+    public List<Integer> getLonelyNodes(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if(root == null)
+            return res;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while(!queue.isEmpty()) {
+            TreeNode curr = queue.poll();
+            if(curr.left == null || curr.right == null) {
+                if(curr.left != null) {
+                    res.add(curr.left.val);  //left is a lonely child
+                    queue.add(curr.left);
+                }
+                if(curr.right != null) {
+                    res.add(curr.right.val);  //right is a lonely child
+                    queue.add(curr.right);
+                }
+            } else {
+                queue.add(curr.left);
+                queue.add(curr.right);
+            }
+        }
+        return res;
+    }
 }
