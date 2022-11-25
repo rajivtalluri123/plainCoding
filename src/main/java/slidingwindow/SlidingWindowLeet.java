@@ -1,6 +1,7 @@
 package slidingwindow;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,6 +120,25 @@ public class SlidingWindowLeet {
 
         return res;
 
+    }
+
+    // 1151. Minimum Swaps to Group All 1's Together
+    // Given a binary array data, return the minimum number of swaps required to group all 1’s present in the array together in any place in the array.
+    // Input: data = [1,0,1,0,1] Output: 1, Input: data = [1,0,1,0,1,0,0,1,1,0,1] Output: 3
+    // alg- problem boils down to finding out window with max ones (window of size total one's count)
+    public int minSwaps(int[] data) {
+        int totalOnesCount = Arrays.stream(data).sum(); //this is slower than simple for loop
+        int left =0, currOnes =0, maxOnes =0;
+        for(int right =0; right < data.length; right++) {
+            currOnes += data[right];
+            //maintain window size
+            if(right -left +1 > totalOnesCount) {
+                currOnes -= data[left];
+                left++;
+            }
+            maxOnes = Math.max(currOnes, maxOnes);
+        }
+        return  totalOnesCount - maxOnes; // no of min swaps = toalonesCount - maxOnesWindow
     }
 
 }
