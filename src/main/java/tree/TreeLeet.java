@@ -1,6 +1,8 @@
 package tree;
 
 
+import com.sun.source.tree.Tree;
+
 import java.util.*;
 
 public class TreeLeet {
@@ -85,4 +87,33 @@ public class TreeLeet {
         }
         return res;
     }
-}
+
+    // 337. House Robber III
+    // The thief has found himself a new place for his thievery again. There is only one entrance to this area, called root.
+    //Besides the root, each house has one and only one parent house. After a tour, the smart thief realized that all houses in this place form a binary tree.
+    // It will automatically contact the police if two directly-linked houses were broken into on the same night.
+    //Given the root of the binary tree, return the maximum amount of money the thief can rob without alerting the police.
+    // Input: root = [3,2,3,null,3,null,1]   Output: 7 (3 + 3 + 1 = 7)
+    // alg -- use knap sack -- I am little drunk
+    public int houseRobberTree(TreeNode root) {
+        Map<TreeNode, Integer> robMap = new HashMap<>();
+        Map<TreeNode, Integer> notRobMap = new HashMap<>();
+        return Math.max(rob(root, true, robMap, notRobMap), rob(root, false, robMap, notRobMap));
+    }
+    private int rob(TreeNode node, boolean rob, Map<TreeNode, Integer> robMap, Map<TreeNode, Integer>  notRobMap) {
+        if(node == null)
+            return 0;
+        int currAmount =0;
+        if(rob) {
+            //knap sack
+            if(robMap.containsKey(node))
+                return robMap.get(node);
+            currAmount = Math.max(node.val + rob(node.left, false, robMap, notRobMap) + rob(node.right, false, robMap, notRobMap), rob(node.left, true, robMap, notRobMap) + rob(node.right, true, robMap, notRobMap));
+            robMap.put(node, currAmount);
+        } else {
+            currAmount = rob(node.left, true, robMap, notRobMap) + rob(node.right, true, robMap, notRobMap);
+            notRobMap.put(node, currAmount);
+        }
+        return currAmount;
+    }
+ }
