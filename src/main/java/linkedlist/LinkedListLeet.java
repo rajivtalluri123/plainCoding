@@ -21,6 +21,26 @@ public class LinkedListLeet {
 
     /////////////Level 2 problems--------
 
+    // 234. Palindrome Linked List
+    // Given the head of a singly linked list, return true if it is a
+    //palindrome or false otherwise.
+    // alg - cam impl gracefully with recursion
+    public boolean isPalindrome(ListNode head) {
+        leftNode = head;
+        return recursivelyCheckPalin(head);
+    }
+    private boolean recursivelyCheckPalin(ListNode node) {
+        if(node == null)
+            return true;
+        if(!recursivelyCheckPalin(node.next))
+            return false;
+        if(leftNode.val == node.val) {
+            leftNode = leftNode.next;
+            return true;
+        }
+        return false;
+    }
+
     //fav-- used recurion nicely to do 2 pointer
     //92. Reverse Linked List II
     //Given the head of a singly linked list and two integers left and right where left <= right, reverse the nodes of the list from position left to position right, and return the reversed list.

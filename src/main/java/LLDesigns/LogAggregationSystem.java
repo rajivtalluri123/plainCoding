@@ -20,12 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class LogAggregator {
+class LogAggregationSystem {
     Map<Integer, List<Integer>> machineMessages; // mackineId and list of logIds
     Map<Integer, List<Integer>> serviceMessages; // serviceId and list of logIds
     Map<Integer, String>        logs;
 
-    public LogAggregator() {
+    public LogAggregationSystem() {
         machineMessages = new HashMap<>();
         serviceMessages = new HashMap<>();
         logs = new HashMap<>();
