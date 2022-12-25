@@ -59,5 +59,32 @@ public class BackTrackLeet {
         }
     }
 
+    // 90. Subsets II
+    //  Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+    //The solution set must not contain duplicate subsets. Return the solution in any order.
+    // alg backtracking approch
+    public List<List<Integer>> generateSubsetWithOutDups(int[] nums) {
+        // cal all combos of all lengths using backtracking
+        Arrays.sort(nums); // to avoid dups
+        List<List<Integer>> res = new ArrayList<>();
+        for(int i =0; i < nums.length; i++) {
+            backtracking(nums, res, i, 0, new ArrayList<Integer>());
+        }
+        return  res;
+    }
+    private void backtracking(int[] nums, List<List<Integer>> res, int length, int start, List<Integer> currSubset) {
+        if(currSubset.size() == length) {
+            //end recursion for the current subset
+            res.add(currSubset);
+        }
+        for(int i = start; i < nums.length; i++) {
+            //avoid dups
+            if(i != 0 && nums[i-1] == nums[i])
+                continue;
+            currSubset.add(nums[i]);
+            backtracking(nums, res, length, i+1, currSubset);
+            currSubset.remove(currSubset.size() -1);
+        }
 
+    }
 }

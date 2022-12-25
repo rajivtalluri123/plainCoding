@@ -1,17 +1,23 @@
 package tree;
 
-
-import com.sun.source.tree.Tree;
-
+import javax.swing.tree.TreeNode;
 import java.util.*;
 
 public class TreeLeet {
 
+    int count; //for pb- 437
+    Stack<TreeNode> stack = new Stack<TreeNode>(); // for 173 - binary tree iterator
     public class TreeNode {
       int val;
+      boolean isBalanced; //for pb 110
+
       TreeNode left;
       TreeNode right;
       TreeNode(int x) { val = x; }
+        TreeNode(int x, boolean isBalanced) {
+          val = x;
+          this.isBalanced = isBalanced;
+        }
   }
 
     /////////////Level 2 problems--------
@@ -116,4 +122,73 @@ public class TreeLeet {
         }
         return currAmount;
     }
+
+    //110. Balanced Binary Tree
+    // Given a binary tree, determine if it is height-balanced
+    //alg - dfs
+    public boolean isBalanced(TreeNode root) {
+        return isBalancedUtility(root).isBalanced;
+    }
+    private TreeNode isBalancedUtility(TreeNode node) {
+        if(node == null)
+            return new TreeNode(-1, true);
+        TreeNode left = isBalancedUtility(node.left);
+        if(!left.isBalanced)
+            return new TreeNode(-1, false);
+        TreeNode right =  isBalancedUtility(node.right);
+        if(!right.isBalanced)
+            return new TreeNode(-1, false);
+        if(Math.abs(left.val - right.val) < 2) {
+            //isbalanced
+            return new TreeNode(Math.max(left.val, right.val) +1, true);
+        }
+        return new TreeNode(-1, false);
+    }
+
+    // 437. Path Sum III
+    // Given the root of a binary tree and an integer targetSum, return the number of paths where the sum of the values along the path equals targetSum.
+    //The path does not need to start or end at the root or a leaf, but it must go downwards (i.e., traveling only from parent nodes to child nodes).
+    //alg -- use map for prefisSum and their counts and do dfs
+    public int pathSum(TreeNode root, int sum) {
+        Map<Integer, Integer> sumCount = new HashMap<>();
+        sumCount.put(0,1); //need this to get path from root
+        dfs(root, sumCount, 0, sum);
+        return count;
+    }
+    private void dfs(TreeNode node, Map<Integer, Integer> sumCount, int currSum, int sum) {
+        if(node == null)
+            return;
+        currSum += node.val;
+        if(sumCount.containsKey(currSum - sum)) {
+            count += sumCount.get(currSum - sum);
+        }
+        sumCount.put(currSum, sumCount.getOrDefault(currSum, 0) +1);
+        dfs(node.left, sumCount, currSum, sum);
+        dfs(node.right, sumCount, currSum, sum);
+        sumCount.put(currSum, sumCount.get(currSum) -1);
+
+    }
+
+    // 173. Binary Search Tree Iterator
+    //done using custom stack
+    public void pushLeftNodes(TreeNode root) {
+        //save left part
+        while(root != null) {
+            stack.push(root);
+            root = root.left;
+        }
+    }
+    public int next() {
+        //pushLeft should be called once before this method..top has left most node
+        //top of stack
+        TreeNode currNode = stack.pop();
+        pushLeftNodes(currNode.right);
+        return currNode.val;
+    }
+    public boolean hasNext() {
+        return !stack.isEmpty();
+    }
+
+
+
  }
