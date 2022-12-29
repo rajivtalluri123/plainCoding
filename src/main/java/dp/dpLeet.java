@@ -58,8 +58,10 @@ public class dpLeet {
             while(currCol < s.length()) {
                 if(s.charAt(row) == s.charAt(col) && dp[row+1][currCol -1] == 1) {
                     dp[row][currCol] = 1;
-                    max = col -row +1; // this will be gt
-                    res = s.substring(row, col+1);
+                    if(max < col - row +1) {
+                        max = col -row +1; // this will be gt
+                        res = s.substring(row, col+1);
+                    }
                 }
                 row++; col++;
             }

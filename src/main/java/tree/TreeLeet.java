@@ -4,6 +4,14 @@ import javax.swing.tree.TreeNode;
 import java.util.*;
 
 public class TreeLeet {
+    class Pair {
+        TreeNode key;
+        Integer val;
+        public Pair(TreeNode key, Integer val) {
+            this.key = key;
+            this.val = val;
+        }
+    }
 
     int count; //for pb- 437
     Stack<TreeNode> stack = new Stack<TreeNode>(); // for 173 - binary tree iterator
@@ -188,6 +196,100 @@ public class TreeLeet {
     public boolean hasNext() {
         return !stack.isEmpty();
     }
+
+    // 310. Minimum Height Trees
+    // A tree is an undirected graph in which any two vertices are connected by exactly one path. In other words, any connected graph without simple cycles is a tree.
+    //Given a tree of n nodes labelled from 0 to n - 1, and an array of n - 1 edges where edges[i] = [ai, bi] indicates that there is an undirected edge between the two nodes ai and bi in the tree, you can choose any node of the tree as the root. When you select a node x as the root, the result tree has height h. Among all possible rooted trees, those with minimum height (i.e. min(h))  are called minimum height trees (MHTs).
+    //Return a list of all MHTs' root labels. You can return the answer in any order.
+    //The height of a rooted tree is the number of edges on the longest downward path between the root and a leaf.
+    // i/p - n = 4, edges = [[1,0],[1,2],[1,3]]  o/p - [1]
+    // i/p - n = 6, edges = [[3,0],[3,1],[3,2],[3,4],[5,4]]  o/p - [3,4]
+    //alg- this problem can be converted to finding centroids (at max 2). remove leaf nodes layer by layer untill u get centroids which is similarc to topological sorting
+    public List<Integer> findMinHeightTrees(int n, int[][] edges) {
+
+        List<Integer> centroids = new ArrayList<>();
+        //edge case
+        if(n < 2) {
+            for(int i =0; i <= n; i++)
+                centroids.add(i);
+            return centroids;
+        }
+
+        //step1 - form a graph / tree here
+        Map<Integer, Set<Integer>> graph = new HashMap<>(); // removing is fast using set
+        for(int i =0; i < n; i++) {
+            graph.put(i, new HashSet<>());
+        }
+        for(int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+            graph.get(edge[1]).add(edge[0]);
+        }
+        List<Integer> leaves = new ArrayList<>();
+        for(Integer key : graph.keySet()) {
+            if(graph.get(key).size() == 1) {
+                //is a leaf
+                leaves.add(key);
+            }
+        }
+        int remaining = leaves.size();
+        while(remaining > 2) {
+            remaining -= leaves.size();
+            //take off curr leaves
+            List<Integer> nextLeaves = new ArrayList<>();
+            for(int leaf : leaves) {
+                int possibleNextLeaf = graph.get(leaf).iterator().next();  //leaf has only one
+                graph.get(possibleNextLeaf).remove(leaf);
+                if(graph.get(possibleNextLeaf).size() == 1) {
+                    //it is my next leaf as it has only 1 and that woule be parent
+                    nextLeaves.add(possibleNextLeaf);
+                }
+                graph.remove(leaf);
+
+            }
+            leaves = nextLeaves;
+        }
+        return  leaves;
+
+    }
+
+    // 662. Maximum Width of Binary Tree
+    // Given the root of a binary tree, return the maximum width of the given tree.
+    //The maximum width of a tree is the maximum width among all levels.
+    //The width of one level is defined as the length between the end-nodes (the leftmost and rightmost non-null nodes), where the null nodes between the end-nodes that would be present in a complete binary tree extending down to that level are also counted into the length calculation.
+    // checkout example -- including null are little tricky to understans
+    //Alg - use bfs and index staring from 0 on very level of tree [left child - 2*n, right node - 2*n +1],  width of every level is indexOfLast - indexOfFirst + 1
+    public int widthOfBinaryTree(TreeNode root) {
+        //use index of the nodes to cal the width
+        //start next level from 2n, 2n + 1, ...
+        // width is indexOfLast - indexOfFirst + 1
+
+        Integer max = Integer.MIN_VALUE;
+
+        //traverse through levels using bfs
+        LinkedList<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root, 0));
+        while(!queue.isEmpty()) {
+            Pair head = queue.getFirst();
+            int size = queue.size();
+            Pair curr = null;
+            for(int i =0; i < size; i++) {
+                curr =  queue.removeFirst();
+                TreeNode currNode = curr.key;
+                if(currNode.left != null) {
+                    queue.add(new Pair(currNode.left, 2*curr.val));
+                }
+                if(currNode.right != null) {
+                    queue.add(new Pair(currNode.right, 2*curr.val +1));
+                }
+            }
+            //head  is first node in the level and curr after for loop is last node
+            max = Math.max(max, curr.val - head.val +1);
+        }
+
+        return max;
+
+    }
+
 
 
 
